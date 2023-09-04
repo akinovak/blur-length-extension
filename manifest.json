@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Blur Extension",
     "version": "1.0",
-    "description": "Blurs the time",
+    "description": "Hides youtube video lengths in order to avoid spoilers",
     "permissions": [
       "activeTab",
       "storage"
