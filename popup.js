@@ -1,21 +1,23 @@
-let extensionActivated;
-let activateButton;
+"use strict";
 
-document.addEventListener('DOMContentLoaded', async function () {
-    activateButton = document.getElementById('activateButton');
+let hidden;
+let shouldHideButton;
 
-    extensionActivated = await isActivated(); 
+document.addEventListener('DOMContentLoaded', async () => {
+    hidden = await getExtensionStatus(); 
+    shouldHideButton = document.getElementById('shouldHideButton');
+
     updateButtonText();
 
-    activateButton.addEventListener('click', async () => {
+    shouldHideButton.addEventListener('click', async () => {
         await clicked(); 
         notifyTabs()
     })
 });
 
 const clicked = async() => {
-    extensionActivated = !extensionActivated;
-    await setActivated(extensionActivated)
+    hidden = !hidden;
+    await setExtensionStatus(hidden)
     updateButtonText()
 }
 
@@ -23,32 +25,12 @@ const notifyTabs = () => {
     chrome.tabs.query({ url: '*://*.youtube.com/*' }, (tabs) => {
         if (tabs && tabs.length > 0) {
             tabs.forEach((tab) => {
-                chrome.tabs.sendMessage(tab.id, { action: 'blurExtensionClicked' });
+                chrome.tabs.sendMessage(tab.id, { action: 'hideExtensionStatusChanged' });
             });
         }
     });
 }
 
 const updateButtonText = () => {
-    activateButton.textContent = extensionActivated ? 'Deactivate' : 'Activate'
-}
-
-const isActivated = async() => {
-    return new Promise((resolve, _) => {
-        chrome.storage.local.get(['blurExtensionActivated'], (result) => {
-          if (!chrome.runtime.lastError) {
-            resolve(result.blurExtensionActivated || false);
-          }
-        });
-    });
-}
-
-const setActivated = async(value) => {
-    return new Promise((resolve, _) => {
-        chrome.storage.local.set({ blurExtensionActivated: value }, () => {
-          if (!chrome.runtime.lastError) {
-            resolve(value);
-          }
-        });
-    });
+    shouldHideButton.textContent = hidden ? 'Show' : 'Hide'
 }

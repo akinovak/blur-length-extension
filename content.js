@@ -1,13 +1,10 @@
-const observerConfig = {
-    childList: true,
-    subtree: true, 
-};
+"use strict";
 
 let shouldHide; 
 
 window.onload = async () => {
     chrome.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
-        if (message.action === 'blurExtensionClicked') {
+        if (message.action === 'hideExtensionStatusChanged') {
             shouldHide = await getExtensionStatus()
             hide(shouldHide)
         }
@@ -20,42 +17,32 @@ window.onload = async () => {
         hide(shouldHide)
     });
 
-    observer.observe(document, observerConfig);
+    observer.observe(document, config.observerConfig);
 };
 
 const hide = (shouldHide) => {
-    updateThumbnails(shouldHide)
-    removePlayerTime(shouldHide)
-    removeProgressBar(shouldHide)
+    hideThumbnails(shouldHide)
+    hideTimeDisplay(shouldHide)
+    hideProgressBar(shouldHide)
 }
 
-const updateThumbnails = (shouldHide) => {
-    const spans = document.querySelectorAll('span#text.style-scope.ytd-thumbnail-overlay-time-status-renderer');
+const hideThumbnails = (shouldHide) => {
+    const spans = document.querySelectorAll(config.elements.thumbnail.selector);
     spans.forEach((span) => {
-        span.style.display = shouldHide ? "none" : "inline-block"
+        span.style.display = shouldHide ? "none" : config.elements.thumbnail.display
     });
 }
 
-const removePlayerTime = (shouldHide) => {
-    const element = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > div.ytp-time-display.notranslate")
+const hideTimeDisplay = (shouldHide) => {
+    const element = document.querySelector(config.elements.timeDisplay.selector)
     if (!element) return
 
-    element.style.display = shouldHide ? "none" : "inline-block"
+    element.style.display = shouldHide ? "none" : config.elements.timeDisplay.display
 }
 
-const removeProgressBar = (shouldHide) => {
-    const element = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container")
+const hideProgressBar = (shouldHide) => {
+    const element = document.querySelector(config.elements.progressBar.selector)
     if (!element) return
 
-    element.style.display = shouldHide ? "none" : "block"
-}
-
-const getExtensionStatus = async() => {
-    return new Promise((resolve, _) => {
-        chrome.storage.local.get(['blurExtensionActivated'], (result) => {
-          if (!chrome.runtime.lastError) {
-            resolve(result.blurExtensionActivated || false);
-          }
-        });
-    });
+    element.style.display = shouldHide ? "none" : config.elements.progressBar.display
 }

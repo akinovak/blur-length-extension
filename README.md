@@ -1,2 +1,2 @@
 # blur-length-extension
-Extension that helps you to blur lengths of youtube videos 
+Extension that hides youtube video lengths in order to avoid spoilers
