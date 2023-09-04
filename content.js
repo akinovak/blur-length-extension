@@ -6,11 +6,8 @@ const observerConfig = {
 let isActive; 
 
 window.onload = async () => {
-    console.log('Window has finished loading');
-
     chrome.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
         if (message.action === 'blurExtensionClicked') {
-          console.log('got the message')
           location.reload()
         }
     });
