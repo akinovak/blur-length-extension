@@ -3,58 +3,51 @@ const observerConfig = {
     subtree: true, 
 };
 
-let isActive; 
+let shouldHide; 
 
 window.onload = async () => {
     chrome.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
         if (message.action === 'blurExtensionClicked') {
-          location.reload()
+            shouldHide = await getExtensionStatus()
+            hide(shouldHide)
         }
     });
 
-    isActive = await getExtensionStatus()
-    hide()
+    shouldHide = await getExtensionStatus()
+    hide(shouldHide)
 
     const observer = new MutationObserver((_) => {
-        hide()
+        hide(shouldHide)
     });
 
     observer.observe(document, observerConfig);
 };
 
-const hide = () => {
-    if (!isActive) return;
-    updateThumbnails()
-    removePlayerTime()
-    removeProgressBar()
+const hide = (shouldHide) => {
+    updateThumbnails(shouldHide)
+    removePlayerTime(shouldHide)
+    removeProgressBar(shouldHide)
 }
 
-const updateThumbnails = () => {
+const updateThumbnails = (shouldHide) => {
     const spans = document.querySelectorAll('span#text.style-scope.ytd-thumbnail-overlay-time-status-renderer');
     spans.forEach((span) => {
-        span.outerText = "Hidden";
+        span.style.display = shouldHide ? "none" : "inline-block"
     });
 }
 
-const updateThumbnailsVideo = () => {
-    const spans = document.querySelectorAll('span#text.style-scope.ytd-thumbnail-overlay-time-status-renderer');
-    spans.forEach((span) => {
-        span.outerText = "Hidden";
-    });
-}
-
-const removePlayerTime = () => {
+const removePlayerTime = (shouldHide) => {
     const element = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > div.ytp-time-display.notranslate")
     if (!element) return
 
-    element.style.display = "none"
+    element.style.display = shouldHide ? "none" : "inline-block"
 }
 
-const removeProgressBar = () => {
-    const element = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container > div.ytp-progress-bar")
+const removeProgressBar = (shouldHide) => {
+    const element = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container")
     if (!element) return
 
-    element.style.display = "none"
+    element.style.display = shouldHide ? "none" : "block"
 }
 
 const getExtensionStatus = async() => {
