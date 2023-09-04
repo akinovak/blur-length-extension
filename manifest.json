@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "Blur Extension",
+    "version": "1.0",
+    "description": "Blurs the time",
+    "permissions": [
+      "activeTab",
+      "storage"
+    ],
+    "host_permissions": [
+        "https://www.youtube.com/*"
+    ],
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+          "matches": ["*://www.youtube.com/*"],
+          "js": ["content.js"]
+        }
+    ]
+  }
+  
