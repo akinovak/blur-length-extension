@@ -1,8 +1,13 @@
 "use strict";
 
 let shouldHide; 
+let thumbnail; 
+let vTime;
+let pBar;  
 
 window.onload = async () => {
+    setUp()
+    
     chrome.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
         if (message.action === 'hideExtensionStatusChanged') {
             shouldHide = await getExtensionStatus()
@@ -12,37 +17,27 @@ window.onload = async () => {
 
     shouldHide = await getExtensionStatus()
     hide(shouldHide)
-
-    const observer = new MutationObserver((_) => {
-        hide(shouldHide)
-    });
-
-    observer.observe(document, config.observerConfig);
 };
 
+const setUp = () => {
+    thumbnail = document.createElement('style');
+    document.head.appendChild(thumbnail);
+
+    vTime = document.createElement('style');
+    document.head.appendChild(vTime);
+
+    pBar = document.createElement('style');
+    document.head.appendChild(pBar);
+}
+
 const hide = (shouldHide) => {
-    hideThumbnails(shouldHide)
-    hideTimeDisplay(shouldHide)
-    hideProgressBar(shouldHide)
-}
-
-const hideThumbnails = (shouldHide) => {
-    const spans = document.querySelectorAll(config.elements.thumbnail.selector);
-    spans.forEach((span) => {
-        span.style.display = shouldHide ? "none" : config.elements.thumbnail.display
-    });
-}
-
-const hideTimeDisplay = (shouldHide) => {
-    const element = document.querySelector(config.elements.timeDisplay.selector)
-    if (!element) return
-
-    element.style.display = shouldHide ? "none" : config.elements.timeDisplay.display
-}
-
-const hideProgressBar = (shouldHide) => {
-    const element = document.querySelector(config.elements.progressBar.selector)
-    if (!element) return
-
-    element.style.display = shouldHide ? "none" : config.elements.progressBar.display
+    if (shouldHide) {
+        thumbnail.innerText = '.ytd-thumbnail-overlay-time-status-renderer { display: none !important; }'
+        vTime.innerText = '.ytp-time-duration { display: none !important; }'
+        pBar.innerText = '.ytp-progress-bar-container { display: none !important; }'
+    } else {
+        thumbnail.innerText = ''
+        vTime.innerText = ''
+        pBar.innerText = ''
+    }
 }
