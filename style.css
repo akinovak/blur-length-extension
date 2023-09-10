@@ -1,11 +1,8 @@
 /* CSS for styling the toggle */
+
 .toggle-container {
     display: flex;
     align-items: center;
-}
-
-.toggle-label {
-    margin-right: 10px;
 }
 
 .toggle-switch {
@@ -30,7 +27,7 @@
 
 /* CSS for styling when the toggle is on */
 .toggle-switch.on {
-    background-color: #4CAF50;
+    background-color: #1E90FF;
 }
 
 .toggle-slider.on {
