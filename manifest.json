@@ -1,23 +1,17 @@
 {
-    "manifest_version": 3,
-    "name": "Blur Extension",
-    "version": "1.0",
-    "description": "Hides youtube video lengths in order to avoid spoilers",
-    "permissions": [
-      "activeTab",
-      "storage"
-    ],
-    "host_permissions": [
-        "https://www.youtube.com/*"
-    ],
-    "action": {
-      "default_popup": "popup.html"
-    },
-    "content_scripts": [
-        {
-          "matches": ["*://www.youtube.com/*"],
-          "js": ["content.js", "storage.js"]
-        }
-    ]
-  }
-  
+  "manifest_version": 3,
+  "name": "Blur Extension",
+  "version": "1.1",
+  "description": "Hides youtube video lengths in order to avoid spoilers",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["https://www.youtube.com/*"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["content.js", "storage.js"]
+    }
+  ]
+}

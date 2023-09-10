@@ -1,12 +1,18 @@
 <!-- popup.html -->
 <!DOCTYPE html>
 <html>
-<head>
-  <title>My Extension Popup</title>
-  <script src="storage.js"></script>
-  <script src="popup.js"></script>
-</head>
-<body>
-  <button id="shouldHideButton">Hide</button>
-</body>
+  <head>
+    <title>My Extension Popup</title>
+    <script src="storage.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="toggle-container">
+      <div class="toggle-switch" id="toggle">
+        <div class="toggle-slider"></div>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
 </html>

@@ -1,36 +1,47 @@
 "use strict";
 
 let hidden;
-let shouldHideButton;
+let toggleSwitch;
+let toggleSlider;
 
-document.addEventListener('DOMContentLoaded', async () => {
-    hidden = await getExtensionStatus(); 
-    shouldHideButton = document.getElementById('shouldHideButton');
+document.addEventListener("DOMContentLoaded", async () => {
+  hidden = await getExtensionStatus();
 
-    updateButtonText();
+  toggleSwitch = document.getElementById("toggle");
+  toggleSlider = toggleSwitch.querySelector(".toggle-slider");
 
-    shouldHideButton.addEventListener('click', async () => {
-        await clicked(); 
-        notifyTabs()
-    })
+  updateToggle();
+
+  toggleSwitch.addEventListener("click", async () => {
+    await clicked();
+    notifyTabs();
+  });
 });
 
-const clicked = async() => {
-    hidden = !hidden;
-    await setExtensionStatus(hidden)
-    updateButtonText()
-}
+const clicked = async () => {
+  hidden = !hidden;
+  updateToggle();
+  await setExtensionStatus(hidden);
+};
 
 const notifyTabs = () => {
-    chrome.tabs.query({ url: '*://*.youtube.com/*' }, (tabs) => {
-        if (tabs && tabs.length > 0) {
-            tabs.forEach((tab) => {
-                chrome.tabs.sendMessage(tab.id, { action: 'hideExtensionStatusChanged' });
-            });
-        }
-    });
-}
+  chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
+    if (tabs && tabs.length > 0) {
+      tabs.forEach((tab) => {
+        chrome.tabs.sendMessage(tab.id, {
+          action: "hideExtensionStatusChanged",
+        });
+      });
+    }
+  });
+};
 
-const updateButtonText = () => {
-    shouldHideButton.textContent = hidden ? 'Show' : 'Hide'
-}
+const updateToggle = () => {
+  if (hidden) {
+    toggleSwitch.classList.add("on");
+    toggleSlider.classList.add("on");
+  } else {
+    toggleSwitch.classList.remove("on");
+    toggleSlider.classList.remove("on");
+  }
+};
